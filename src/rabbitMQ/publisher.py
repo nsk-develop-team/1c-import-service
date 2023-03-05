@@ -1,7 +1,8 @@
-import pika
-import os
-import logging
 import json
+import logging
+import os
+
+import pika
 
 
 def publish_new_completed_order():

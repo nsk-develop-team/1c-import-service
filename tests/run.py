@@ -1,6 +1,6 @@
 import threading
-from src.rabbitMQ import *
 
+from src.rabbitMQ import *
 
 publish_new_completed_order()
 subscribe()

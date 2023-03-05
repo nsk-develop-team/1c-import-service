@@ -1,9 +1,9 @@
 import functools
-import pika
-import os
 import json
 import logging
+import os
 
+import pika
 
 from src.models import Order
 

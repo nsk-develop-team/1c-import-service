@@ -30,11 +30,11 @@ def xmlvalidator(path_to_web):
         print(xsd_schema.error_log)
 
 
-def main():
+def test_validator():
     """FOR TESTS."""
-    path_to_web = os.path.abspath('web')
+    path_to_web = os.path.dirname(__file__)
     xmlvalidator(path_to_web)
 
 
 if __name__ == '__main__':
-    main()
+    test_validator()

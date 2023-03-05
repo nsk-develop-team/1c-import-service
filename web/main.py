@@ -3,7 +3,7 @@ import logging
 import os
 import time
 import uuid
-from logging.handlers import RotatingFileHandler
+from logging import StreamHandler
 
 from archiver import split_zip_file, xml_to_zip
 from auth import auth_to_1c
@@ -16,7 +16,7 @@ load_dotenv()
 
 logger = logging.getLogger('main')
 logger.setLevel(logging.INFO)
-handler = RotatingFileHandler('logs.log', maxBytes=50000000, backupCount=5)
+handler = StreamHandler()
 logger.addHandler(handler)
 formatter = logging.Formatter(
     '%(asctime)s - %(levelname)s - '
@@ -25,12 +25,11 @@ formatter = logging.Formatter(
 handler.setFormatter(formatter)
 
 
-def put_data_to_web_1c(service_url, user, password, data):
+def put_data_to_web_1c(client, data):
     """Authorized in a 1C web service, collects a XML from input data,
     archives and sends them to a web service."""
     try:
-        auth_client = auth_to_1c(service_url, user, password)
-        path_to_web = os.path.abspath('web')
+        path_to_web = os.path.dirname(__file__)
         create_xml(data, path_to_web)
         xml_to_zip(path_to_web)
 
@@ -40,7 +39,7 @@ def put_data_to_web_1c(service_url, user, password, data):
             with open(path_to_datafile, 'rb') as zip_file:
                 file_data = zip_file.read()
 
-            auth_client.service.PutFilePart(file_id, 0, file_data)
+            client.service.PutFilePart(file_id, 0, file_data)
             logger.info('PutFilePart - OK')
         else:
             split_zip_file(path_to_datafile)
@@ -51,7 +50,7 @@ def put_data_to_web_1c(service_url, user, password, data):
                 with open(part_path, 'rb') as zip_file:
                     file_data = zip_file.read()
 
-                auth_client.service.PutFilePart(
+                client.service.PutFilePart(
                     file_id, part_number, file_data
                 )
                 logger.info('PutFilePart - OK')
@@ -59,12 +58,15 @@ def put_data_to_web_1c(service_url, user, password, data):
                 os.remove(part_path)
                 part_path = f'{path_to_datafile}.{part_number + 0:03d}'
 
-        response = auth_client.service.PutData(file_id)
-        time.sleep(5)
+        response = client.service.PutData(file_id)
 
-        result = auth_client.service.PutDataActionResult(
-            response['OperationID']
-        )
+        while True:
+            result = client.service.PutDataActionResult(
+                response['OperationID'])
+            if result['return'] != 'Active':
+                break
+            time.sleep(5)
+
         logger.info(result)
 
     except FileNotFoundError as err:
@@ -72,9 +74,6 @@ def put_data_to_web_1c(service_url, user, password, data):
         return
     except CreateXmlError as err:
         logger.error(f'CreateXmlError: {err}')
-        return
-    except AuthTo1cError as err:
-        logger.error(f'AuthTo1cError: {err}')
         return
     except XmlToZipError as err:
         logger.error(f'XmlToZipError: {err}')
@@ -86,7 +85,7 @@ def put_data_to_web_1c(service_url, user, password, data):
         logger.error(f'Incorrect response from the PutData method: {err}')
         return
     except Exception as err:
-        logger.exception(f'Unexpected error while working with file: {err}')
+        logger.exception(f'Unexpected error: {err}')
         return
 
 
@@ -102,7 +101,15 @@ def main():
     service_url = os.getenv('SERVICE_URL')
     login = os.getenv('LOGIN')
     password = os.getenv('PASSWORD')
-    put_data_to_web_1c(service_url, login, password, data)
+    try:
+        auth_client = auth_to_1c(service_url, login, password)
+        put_data_to_web_1c(auth_client, data)
+    except AuthTo1cError as err:
+        logger.error(f'AuthTo1cError: {err}')
+        return
+    except Exception as err:
+        logger.exception(f'Unexpected error: {err}')
+        return
 
 
 if __name__ == '__main__':

@@ -37,7 +37,7 @@ def create_xml(data, path_to_web):
         raise CreateXmlError
 
 
-def main():
+def test_create_xml():
     """FOR TESTS."""
     data = {
         'amount': '1670',
@@ -46,9 +46,9 @@ def main():
         'local_currency': '118018.9',
         'rate': '70.67'
     }
-    path_to_web = os.path.abspath('web')
+    path_to_web = os.path.dirname(__file__)
     create_xml(data, path_to_web)
 
 
 if __name__ == '__main__':
-    main()
+    test_create_xml()

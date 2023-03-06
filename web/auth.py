@@ -11,18 +11,14 @@ logger = logging.getLogger('main')
 
 
 def auth_to_1c(service_url, user, password):
-    """Авторизация в сервисе 1С по переданным параметрам."""
+    """Authorization in the 1C service
+    according to the transferred parameters.
+    """
     try:
         session = Session()
         session.auth = HTTPBasicAuth(user, password)
         transport = Transport(session=session)
         client = Client(service_url, transport=transport)
-
-        if not client.service.TestConnection():
-            logger.error('TestConnection returns FALSE')
-
-            raise AuthTo1cError
-
         logger.info('auth_to_1c - OK')
 
         return client

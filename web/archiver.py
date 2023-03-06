@@ -8,7 +8,7 @@ logger = logging.getLogger('main')
 
 
 def xml_to_zip(path_to_web):
-    """Архивирует XML в ZIP-файл."""
+    """Archives the XML to a ZIP file."""
     try:
         path_to_xmlfile = path_to_web + '/data/datafile.xml'
         path_to_zipfile = path_to_web + '/data/datafile.zip'

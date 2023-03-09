@@ -1,11 +1,12 @@
 import logging
 
 import requests.exceptions
-from exceptions import AuthTo1cError
 from requests import Session
 from requests.auth import HTTPBasicAuth
 from zeep import Client
 from zeep.transports import Transport
+
+from ..exceptions import AuthTo1cError
 
 logger = logging.getLogger('main')
 

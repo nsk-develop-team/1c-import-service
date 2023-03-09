@@ -2,16 +2,17 @@ import logging
 import os
 import zipfile
 
-from exceptions import SplitZipFileError, XmlToZipError
+from ...exceptions import SplitZipFileError, XmlToZipError
 
 logger = logging.getLogger('main')
 
 
-def xml_to_zip(path_to_web):
+def xml_to_zip():
     """Archives the XML to a ZIP file."""
     try:
-        path_to_xmlfile = path_to_web + '/data/datafile.xml'
-        path_to_zipfile = path_to_web + '/data/datafile.zip'
+        parent_dir_path = os.path.dirname(os.path.dirname(__file__))
+        path_to_xmlfile = parent_dir_path + '/data/datafile.xml'
+        path_to_zipfile = parent_dir_path + '/data/datafile.zip'
         with zipfile.ZipFile(path_to_zipfile, 'w') as zip_file:
             zip_file.write(path_to_xmlfile, arcname='datafile.xml')
         os.remove(path_to_xmlfile)
@@ -25,9 +26,11 @@ def xml_to_zip(path_to_web):
         raise XmlToZipError
 
 
-def split_zip_file(path_to_datafile):
+def split_zip_file():
     """Split a ZIP file into chunks of a given size."""
     try:
+        parent_dir_path = os.path.dirname(os.path.dirname(__file__))
+        path_to_datafile = parent_dir_path + '/data/datafile.zip'
         part_size = 2097152  # 2 MB = 2097152 byte
         zip_name, ext = os.path.splitext(path_to_datafile)
         with zipfile.ZipFile(path_to_datafile, 'r') as zip_file:

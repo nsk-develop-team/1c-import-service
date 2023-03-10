@@ -6,9 +6,9 @@ from requests.auth import HTTPBasicAuth
 from zeep import Client
 from zeep.transports import Transport
 
-from ..exceptions import AuthTo1cError
+from ..exceptions import AuthTo1СError
 
-logger = logging.getLogger('main')
+logger = logging.getLogger('web')
 
 
 def auth_to_1c(service_url, user, password):
@@ -26,7 +26,7 @@ def auth_to_1c(service_url, user, password):
 
     except requests.exceptions.HTTPError as err:
         logger.error(f'requests.exceptions.HTTPError: {err}')
-        raise AuthTo1cError
+        raise AuthTo1СError
     except Exception as err:
         logger.exception(f'Exception: {err}')
-        raise AuthTo1cError
+        raise AuthTo1СError

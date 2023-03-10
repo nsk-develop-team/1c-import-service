@@ -4,7 +4,7 @@ class CreateXmlError(Exception):
     pass
 
 
-class AuthTo1cError(Exception):
+class AuthTo1СError(Exception):
     """Custom error of the auth_to_1c function."""
 
     pass

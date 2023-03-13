@@ -20,3 +20,9 @@ class SplitZipFileError(Exception):
     """Custom error of the split_zip_file function."""
 
     pass
+
+
+class SendFileError(Exception):
+    """Custom error of the subscribe function."""
+
+    pass

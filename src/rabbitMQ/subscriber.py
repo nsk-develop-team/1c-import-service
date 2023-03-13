@@ -1,34 +1,42 @@
-import functools
 import json
-import logging
 import os
+import logging
 
 import pika
 
-from src.models import Order
+from ..web.services import auth, test_connection, put_data_to_web_1c
+
+logger = logging.getLogger('web')
 
 
 def subscribe():
-    url = os.environ.get('CLOUDAMQP_URL', 'amqp://guest:guest@localhost:5672/%2f')
-    params = pika.URLParameters(url)
-    connection = pika.BlockingConnection(params)
-    channel = connection.channel()
+    """Init RabbitMQ queues subscriber.
+    """
+    try:
+        url = os.environ.get('CLOUDAMQP_URL', 'amqp://guest:guest@localhost:5672/%2f')
+        params = pika.URLParameters(url)
+        connection = pika.BlockingConnection(params)
+        channel = connection.channel()
 
-    # New complete order from queue
-    # new_completed_order_callback = functools.partial(new_completed_order, args=(1, 2)
-    channel.queue_declare(queue='new_completed_order')
-    channel.basic_consume('new_completed_order', auto_ack=True, on_message_callback=new_completed_order)
+        channel.queue_declare(queue='new_completed_orders')
+        channel.basic_consume('new_completed_orders', auto_ack=True, on_message_callback=get_orders)
 
-    channel.start_consuming()
-    connection.close()
+        channel.start_consuming()
+        connection.close()
+    except Exception as err:
+        logger.error(f'QueueSubscribeError: {err}')
 
 
-def new_completed_order(ch, method, properties, body):
+def get_orders(ch, method, properties, body):
+    """Handle orders: parse and save
+    """
     try:
         data = json.loads(body)
-        order = Order(data)
 
-        # TODO: realize sending order
-
-    except Exception as e:
-        logging.error('GET ORDER ERROR: ' + str(e))
+        client_1c = auth()
+        test_connection(client_1c)
+        result = put_data_to_web_1c(client_1c, data)
+        if not result:
+            logger.info('Data doesn\'t send')
+    except Exception as err:
+        logger.error(f'{err}')

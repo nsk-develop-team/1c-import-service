@@ -2,6 +2,7 @@ import logging
 import os
 import zipfile
 
+from ...exceptions import SplitZipFileError, XmlToZipError
 from .constants import (DATAFILE_NAME, DATAFILE_PATH, DATAFILE_XML_PATH,
                         DATAFILE_ZIP_PATH)
 
@@ -17,14 +18,10 @@ def xml_to_zip():
         logger.info('xml_to_zip - OK')
         os.remove(DATAFILE_XML_PATH)
 
-        return True
-
     except FileNotFoundError as err:
-        logger.error(f'FileNotFoundError: {err}')
-        return False
+        raise XmlToZipError(f'FileNotFoundError: {err}')
     except Exception as err:
-        logger.exception(f'Exception: {err}')
-        return False
+        raise XmlToZipError(f'Exception: {err}')
 
 
 def split_zip_file(size):
@@ -46,18 +43,12 @@ def split_zip_file(size):
                         part_zf.write(
                             part_path, arcname=f'{DATAFILE_NAME}.xml'
                         )
-                    os.remove(part_path)
                     num_part += 1
                     size_files -= len(part_data)
 
         logger.info('split_zip_file - OK')
-        os.remove(DATAFILE_ZIP_PATH)
-
-        return True
 
     except FileNotFoundError as err:
-        logger.error(f'FileNotFoundError: {err}')
-        return False
+        raise SplitZipFileError(f'FileNotFoundError: {err}')
     except Exception as err:
-        logger.exception(f'Exception: {err}')
-        return False
+        raise SplitZipFileError(f'Exception: {err}')

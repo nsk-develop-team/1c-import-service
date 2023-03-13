@@ -105,47 +105,35 @@ ACCOUNTS_CONFIG = {
     },
 }
 
-DOC_ROOT_PATH = 'bd:Body/bd:Документ.ПоступлениеТоваровУслуг/'
+BODY_PATH = 'bd:Body'
+GOOD_PATH = 'bd:Body/bd:Документ.ПоступлениеТоваровУслуг'
 ACCOUNTS_PATHS = {
     'acc_id': [
-        DOC_ROOT_PATH + ('bd:КлючевыеСвойства/bd:Контрагент/'
-                         'bd:Ссылка'),
-        DOC_ROOT_PATH + ('bd:ДанныеВзаиморасчетов/bd:Договор/bd:Контрагент/'
-                         'bd:Ссылка'),
-        ],
+        'bd:КлючевыеСвойства/bd:Контрагент/bd:Ссылка',
+        'bd:ДанныеВзаиморасчетов/bd:Договор/bd:Контрагент/bd:Ссылка'
+    ],
     'name': [
-        DOC_ROOT_PATH + ('bd:КлючевыеСвойства/bd:Контрагент/'
-                         'bd:Наименование'),
-        DOC_ROOT_PATH + ('bd:ДанныеВзаиморасчетов/bd:Договор/bd:Контрагент/'
-                         'bd:Наименование')
-        ],
+        'bd:КлючевыеСвойства/bd:Контрагент/bd:Наименование',
+        'bd:ДанныеВзаиморасчетов/bd:Договор/bd:Контрагент/bd:Наименование'
+    ],
     'fullname': [
-        DOC_ROOT_PATH + ('bd:КлючевыеСвойства/bd:Контрагент/'
-                         'bd:НаименованиеПолное'),
-        DOC_ROOT_PATH + ('bd:ДанныеВзаиморасчетов/bd:Договор/bd:Контрагент/'
-                         'bd:НаименованиеПолное')
+        'bd:КлючевыеСвойства/bd:Контрагент/bd:НаименованиеПолное',
+        'bd:ДанныеВзаиморасчетов/bd:Договор/bd:Контрагент/bd:НаименованиеПолное'
     ],
-    'stock_id': [
-        DOC_ROOT_PATH + 'bd:Склад/bd:Ссылка'
-    ],
-    'stock_name': [
-        DOC_ROOT_PATH + 'bd:Склад/bd:Наименование',
-        ],
-    'contract': [
-        DOC_ROOT_PATH + ('bd:ДанныеВзаиморасчетов/bd:Договор/'
-                         'bd:Ссылка')
-    ]
+    'stock_id': ['bd:Склад/bd:Ссылка'],
+    'stock_name': ['bd:Склад/bd:Наименование'],
+    'contract': ['bd:ДанныеВзаиморасчетов/bd:Договор/bd:Ссылка']
 }
 
 # значение False - поле не будет заполняться в шаблоне
 NAMES_MAP = {
-        'id': DOC_ROOT_PATH + 'bd:КлючевыеСвойства/bd:Ссылка',
-        'amount': DOC_ROOT_PATH + 'bd:Товары/bd:Строка/bd:Количество',
-        'account': (ACCOUNTS_PATHS, ACCOUNTS_CONFIG),
-        'currency': False,
-        'created_date': DOC_ROOT_PATH + 'bd:КлючевыеСвойства/bd:Дата',
-        'local_currency': DOC_ROOT_PATH + 'bd:Товары/bd:Строка/bd:Сумма',
-        'rate': DOC_ROOT_PATH + 'bd:Товары/bd:Строка/bd:Цена',
-        'doc_number': DOC_ROOT_PATH + 'bd:КлючевыеСвойства/bd:Номер',
-        'comment': DOC_ROOT_PATH + 'bd:Комментарий'
-    }
+    'id': 'bd:КлючевыеСвойства/bd:Ссылка',
+    'amount': 'bd:Товары/bd:Строка/bd:Количество',
+    'account': (ACCOUNTS_PATHS, ACCOUNTS_CONFIG),
+    'currency': False,
+    'created_date': 'bd:КлючевыеСвойства/bd:Дата',
+    'local_currency': ('bd:Товары/bd:Строка/bd:Сумма', 'bd:Сумма'),
+    'rate': 'bd:Товары/bd:Строка/bd:Цена',
+    'doc_number': 'bd:КлючевыеСвойства/bd:Номер',
+    'comment': 'bd:Комментарий'
+}

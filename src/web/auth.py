@@ -25,8 +25,6 @@ def auth_to_1c(service_url, user, password):
         return client
 
     except requests.exceptions.HTTPError as err:
-        logger.error(f'requests.exceptions.HTTPError: {err}')
-        raise AuthTo1СError
+        raise AuthTo1СError(f'requests.exceptions.HTTPError: {err}')
     except Exception as err:
-        logger.exception(f'Exception: {err}')
-        raise AuthTo1СError
+        raise AuthTo1СError(f'Exception: {err}')

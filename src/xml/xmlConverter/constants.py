@@ -12,7 +12,7 @@ DATAFILE_NAME = 'datafile'
 DATAFILE_PATH = DATA_PATH + DATAFILE_NAME
 DATAFILE_XML_PATH = DATAFILE_PATH + '.xml'
 DATAFILE_ZIP_PATH = DATAFILE_PATH + '.zip'
-DOC_PATH = XML_PATH + '/templates/docPostuplenieTovarovIUslug_ED1_8.xml'
+DOC_PATH = XML_PATH + '/templates/docGoodsAndServices_ED_1_8.xml'
 
 NAMESPACES = {
         'msg': 'http://www.1c.ru/SSL/Exchange/Message',

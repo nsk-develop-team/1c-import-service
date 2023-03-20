@@ -26,3 +26,9 @@ class SendFileError(Exception):
     """Custom error of the subscribe function."""
 
     pass
+
+
+class EntityError(Exception):
+    """Custom error of the entity class."""
+
+    pass

@@ -1,4 +1,9 @@
-ACCOUNTS_CONFIG = {
+FILE_NAME = 'GoodAndService.xml'
+TEMPLATE_NAME = 'docGoodsAndServices_ED_1_8.xml'
+BODY_PATH = 'bd:Body'
+ELEMENT_PATH = 'bd:Body/bd:Документ.ПоступлениеТоваровУслуг'
+
+DICTIONARY = {
     'CESAR': {
         'acc_id': 'f8c70b62-fded-11ec-80df-b42e9965e88e',
         'name': 'CESAR',
@@ -105,9 +110,7 @@ ACCOUNTS_CONFIG = {
     },
 }
 
-BODY_PATH = 'bd:Body'
-GOOD_PATH = 'bd:Body/bd:Документ.ПоступлениеТоваровУслуг'
-ACCOUNTS_PATHS = {
+DICTIONARY_MAPPING = {
     'acc_id': [
         'bd:КлючевыеСвойства/bd:Контрагент/bd:Ссылка',
         'bd:ДанныеВзаиморасчетов/bd:Договор/bd:Контрагент/bd:Ссылка'
@@ -125,11 +128,10 @@ ACCOUNTS_PATHS = {
     'contract': ['bd:ДанныеВзаиморасчетов/bd:Договор/bd:Ссылка']
 }
 
-# значение False - поле не будет заполняться в шаблоне
-NAMES_MAP = {
+MAPPING = {
     'id': 'bd:КлючевыеСвойства/bd:Ссылка',
     'amount': 'bd:Товары/bd:Строка/bd:Количество',
-    'account': (ACCOUNTS_PATHS, ACCOUNTS_CONFIG),
+    'account': 'DICTIONARY',
     'currency': False,
     'created_date': 'bd:КлючевыеСвойства/bd:Дата',
     'local_currency': ('bd:Товары/bd:Строка/bd:Сумма', 'bd:Сумма'),

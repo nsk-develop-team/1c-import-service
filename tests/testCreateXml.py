@@ -1,39 +1,21 @@
-import datetime
-import os
 import sys
-import uuid
+
+from src.services.factory import XMLFactory
+from src.services.archive import *
+from tests.data import *
 
 sys.path.append(os.getcwd())  # для корректного импорта VSCode
-from src.xml.xmlConverter.creator import create_xml
 
 
 def test_create_xml():
     """Test function create_xml in creator.py."""
-    data = [
-        {
-            'id': str(uuid.uuid4()),
-            'amount': '1670',
-            'account': 'VITANYA',
-            'currency': 'USD',
-            'created_date': datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-            'local_currency': '118018.9',
-            'rate': '70.67',
-            'doc_number': '1000-000001',
-            'comment': 'blablabla'
-        },
-        {
-            'id': str(uuid.uuid4()),
-             'amount': '1670',
-             'account': 'TATAN',
-             'currency': 'USD',
-             'created_date': datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-             'local_currency': '118018.9',
-             'rate': '70.67',
-             'doc_number': '1000-000001',
-             'comment': 'blablabla'
-        }
-    ]
-    create_xml(data)
+    order_data = create_order_data()
+    withdraw_data = create_withdraw_data()
+
+    factory = XMLFactory()
+    file_order_path = factory.create_xml_file(order_data)
+    xml_to_zip(file_order_path)
+    file_withdraw_path = factory.create_xml_file(withdraw_data)
 
 
 if __name__ == '__main__':

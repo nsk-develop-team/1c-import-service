@@ -1,15 +1,15 @@
 import json
-import os
-import logging
+import functools
 
 import pika
 
-from ..web.services import auth, test_connection, put_data_to_web_1c
+from src.services.factory import XMLFactory
+from src.services.archive import *
 
 logger = logging.getLogger('web')
 
 
-def subscribe():
+def subscribe(client_1c):
     """Init RabbitMQ queues subscriber.
     """
     try:
@@ -18,8 +18,9 @@ def subscribe():
         connection = pika.BlockingConnection(params)
         channel = connection.channel()
 
-        channel.queue_declare(queue='new_completed_orders')
-        channel.basic_consume('new_completed_orders', auto_ack=True, on_message_callback=get_orders)
+        send_data_1c_callback = functools.partial(send_data_1c, args=(client_1c,))
+        channel.queue_declare(queue='data_to_1C')
+        channel.basic_consume('data_to_1C', auto_ack=True, on_message_callback=send_data_1c_callback)
 
         channel.start_consuming()
         connection.close()
@@ -27,16 +28,16 @@ def subscribe():
         logger.error(f'QueueSubscribeError: {err}')
 
 
-def get_orders(ch, method, properties, body):
+def send_data_1c(ch, method, properties, body, args):
     """Handle orders: parse and save
     """
     try:
+        client = args[0]
         data = json.loads(body)
 
-        client_1c = auth()
-        test_connection(client_1c)
-        result = put_data_to_web_1c(client_1c, data)
-        if not result:
-            logger.info('Data doesn\'t send')
+        factory = XMLFactory()
+        file_path = factory.create_xml_file(data)
+        zip_file = xml_to_zip(file_path)
+        client.put_file_to_web_service(zip_file)
     except Exception as err:
         logger.error(f'{err}')
